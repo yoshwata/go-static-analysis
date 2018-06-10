@@ -35,8 +35,29 @@ func main() {
         var _ = funcStr
 
         check_regexp(`^func`, scanner.Text())
-        r := regexp.MustCompile(`func \(.*\) (\w+)\(.*`)
+        // Instance method
+        r := regexp.MustCompile(`^func \(.*\) (\w+)\(.*`)
+        // r := regexp.MustCompile(`^func\s[.*\s\(\)]?(\w+)\(.*`)
         funcName := r.FindAllStringSubmatch(scanner.Text(), -1)
+        if len(funcName) > 0 {
+            // fmt.Println(funcName[0][1])
+            // fmt.Println(r.FindAllStringSubmatch(scanner.Text(), -1))
+            if check_regexp(`^func`, scanner.Text()) == true {
+                funcStr += scanner.Text() + "\n"
+                for scanner.Scan() {
+                    funcStr += scanner.Text() + "\n"
+                    if check_regexp(`^}$`, scanner.Text()) == true {
+                        // fmt.Println(funcName[0][1])
+                        // pp.Println(m)
+                        m[funcName[0][1]] = funcStr
+                        break
+                    }
+                }
+            }
+        }
+        // normarl method
+        r = regexp.MustCompile(`^func\s(\w+)\(.*`)
+        funcName = r.FindAllStringSubmatch(scanner.Text(), -1)
         if len(funcName) > 0 {
             // fmt.Println(funcName[0][1])
             // fmt.Println(r.FindAllStringSubmatch(scanner.Text(), -1))
